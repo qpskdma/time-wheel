@@ -21,11 +21,23 @@ module.exports = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
+       {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+       {
+        test: /\.(ico|png|jpg|jpeg|gif|svg|webp)(\?v=\d+\.\d+\.\d+)?$/,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][ext][query]'
+        }
+      }
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './public/index.html',
+      favicon: './public/favicon.png',
     }),
   ],
   devServer: {

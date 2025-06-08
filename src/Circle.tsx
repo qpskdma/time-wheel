@@ -1,40 +1,63 @@
-import React from 'react';
-import { points } from './data';
+import { useState } from "react";
+import { Point, points } from "./data";
+import { YearAnimation } from "./Yearanimation";
 
 interface CircleProps {
-  rotation: number;        
-  handlePointClick: (pointAngle: number, id: string) => void; 
+  rotation: number;
+  handlePointClick: (point: Point) => void;
+  activePoint: string;
 }
 
-const Circle: React.FC<CircleProps> = ({rotation, handlePointClick}) => {
+const Circle: React.FC<CircleProps> = ({
+  rotation,
+  handlePointClick,
+  activePoint,
+}) => {
+  const [activePointId, setActivePointId] = useState<string | null>(null);
 
   return (
-     <>
-	  <div 
-        className="circle" 
-        style={{ transform: `rotate(${rotation}deg)` }}
-      >
+    <>
+      <div className="circle" style={{ transform: `rotate(${rotation}deg)` }}>
         {points.map((point) => (
           <div
             key={point.id}
-            className={`point point-visible`}
+            className={`point ${
+              activePointId === point.id || activePoint === point.id
+                ? "point-visible"
+                : "point-hidden"
+            } `}
             style={{
-              transform: `rotate(${point.angle}deg) translate(15vw) rotate(${-point.angle}deg)`,
+              transform: `rotate(${
+                point.angle
+              }deg) translate(15vw) rotate(${-point.angle}deg) rotate(${-rotation}deg)`,
             }}
-            onClick={() => handlePointClick(point.angle, point.id)}
+            onClick={() => handlePointClick(point)}
+            onMouseEnter={() => setActivePointId(point.id)}
+            onMouseLeave={() => setActivePointId(null)}
           >
-			<span style={{ transform: `rotate(${-rotation}deg)` }}>
+            <span
+              className={`${
+                activePointId === point.id || activePoint === point.id
+                  ? ""
+                  : "hidden"
+              }`}
+            >
               {point.place}
-			<span className='point-name'>{point.name}</span>
+              <span
+                className={`point-name ${
+                  activePointId === point.id || activePoint === point.id
+                    ? ""
+                    : "hidden"
+                }`}
+              >
+                {point.name}
+              </span>
             </span>
-            </div>
+          </div>
         ))}
       </div>
-		<div className='circle-year-wrapper'>
-			<div className='circle-year-begin'>2003</div>
-			<div className='circle-year-final'>2010</div>
-		</div>
-	 </>
+      <YearAnimation activePoint={activePoint} />
+    </>
   );
 };
 
